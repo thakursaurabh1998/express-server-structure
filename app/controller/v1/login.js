@@ -1,5 +1,5 @@
-const { login } = require('../../services').v1;
+const { login } = require('../../../services');
 
-module.exports = async (req, res) => {
-  res.json({ hello: 'world', ok: await login() });
+module.exports = async (_req, res) => {
+    res.json({ hello: 'world', ok: await login() });
 };
