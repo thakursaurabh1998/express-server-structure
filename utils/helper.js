@@ -1,4 +1,4 @@
-function createResponse(success, errors, data, errorType) {
+export function createResponse(success, errors, data, errorType) {
     return {
         success,
         errors,
@@ -14,6 +14,25 @@ const validationTypes = {
     headers: 'headers'
 };
 
+export function errorResponse(error) {
+    let errorMessage = 'InternalError';
+    let statusCode = 500;
+    if (error instanceof ServerError) {
+        errorMessage = error.clientError;
+        statusCode = error.statusCode;
+    }
+    const response = createResponse(false, [errorMessage]);
+    return { statusCode, response };
+}
+
+export class ServerError extends Error {
+    constructor(internalError, statusCode, clientError) {
+        super(internalError);
+        this.statusCode = statusCode || 500;
+        this.clientError = clientError || internalError;
+    }
+}
+
 /**
  * This function acts like a higher order function which wraps the main controller
  * and helps in validation of the request body, param or/and query before
@@ -24,7 +43,7 @@ const validationTypes = {
  * @param {{body?: Object, params?: Object, query?: Object}} schemaValidator
  * @returns {(req: import('express').Request, res: import('express').Response, next?: import('express').NextFunction) => void}
  */
-function verifyRequestSchema(controller, schemaValidator) {
+export function verifyRequestSchema(controller, schemaValidator) {
     return async (req, res, next) => {
         try {
             await Promise.all(
@@ -59,8 +78,3 @@ function verifyRequestSchema(controller, schemaValidator) {
         }
     };
 }
-
-module.exports = {
-    createResponse,
-    verifyRequestSchema
-};

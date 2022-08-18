@@ -1,3 +1,1 @@
-module.exports = {
-    v1: require('./v1')
-};
+export { default as v1 } from './v1';

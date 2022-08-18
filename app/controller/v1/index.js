@@ -1,3 +1,1 @@
-module.exports = {
-    login: require('./login')
-};
+export * as user from './user';

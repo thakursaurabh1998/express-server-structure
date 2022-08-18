@@ -1,10 +1,11 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+import express from 'express';
+import bodyParser from 'body-parser';
 
-const config = require('./config');
-const routes = require('./routes');
-const { createResponse } = require('../utils/helper');
-const { requestLogger, logger } = require('../utils/logger');
+import config from './config';
+import * as routes from './routes';
+import { createResponse, errorResponse } from '../utils/helper';
+import { requestLogger, logger } from '../utils/logger';
+import { sequelize } from '../utils/connections';
 
 const app = express();
 
@@ -22,28 +23,27 @@ app.use((_req, res) => {
 });
 
 app.use((err, _req, res, _next) => {
-    logger.fatal({
-        type: 'INTERNAL_SERVER_ERROR',
-        err
-    });
-    res.status(500).json({
-        data: "Something isn't right"
-    });
+    const { statusCode, response } = errorResponse(err);
+    if (statusCode >= 500) {
+        logger.error(err);
+    } else {
+        logger.info(err);
+    }
+    res.status(statusCode).json(response);
 });
 
 let server = null;
 
-module.exports = {
-    start: () => {
-        server = app.listen(config.server.port);
-        logger.info(`API running on port - ${config.server.port}`);
-    },
+export async function start() {
+    await sequelize.sync();
+    server = app.listen(config.server.port);
+    logger.info(`API running on port - ${config.server.port}`);
+}
 
-    // manage graceful shutdown with this function
-    stop: () => {
-        if (!server) {
-            throw new Error('Server not started yet');
-        }
-        server.close();
+// manage graceful shutdown with this function
+export async function stop() {
+    if (!server) {
+        throw new Error('Server not started yet');
     }
-};
+    server.close();
+}

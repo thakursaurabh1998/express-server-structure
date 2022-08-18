@@ -1,5 +1,5 @@
-const server = require('./app/server');
-const { logger } = require('./utils/logger');
+import * as server from './app/server';
+import { logger } from './utils/logger';
 
 server.start();
 
