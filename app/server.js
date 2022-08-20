@@ -6,6 +6,7 @@ import * as routes from './routes';
 import { createResponse, errorResponse } from '../utils/helper';
 import { requestLogger, logger } from '../utils/logger';
 import { sequelize } from '../utils/connections';
+import { fillData } from '../seed';
 
 const app = express();
 
@@ -35,7 +36,8 @@ app.use((err, _req, res, _next) => {
 let server = null;
 
 export async function start() {
-    await sequelize.sync();
+    await sequelize.sync({ alter: true });
+    await fillData();
     server = app.listen(config.server.port);
     logger.info(`API running on port - ${config.server.port}`);
 }
