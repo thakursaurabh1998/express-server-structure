@@ -8,9 +8,13 @@ const User = sequelize.define('User', {
         autoIncrement: true,
         primaryKey: true
     },
-    userId: { type: DataTypes.STRING, unique: true },
+    userName: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false
+    },
     name: DataTypes.STRING,
-    profilePicture: { type: DataTypes.STRING, allowNull: true }
+    displayPicture: { type: DataTypes.STRING }
 });
 
 export default User;
