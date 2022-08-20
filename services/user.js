@@ -1,7 +1,7 @@
 import User from '../models/user';
 
-export async function create(userId, name) {
-    const newuser = User.build({ name, userId });
+export async function create(userName, name) {
+    const newuser = User.build({ name, userName });
     return newuser.save();
 }
 
