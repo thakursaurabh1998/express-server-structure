@@ -1,6 +1,8 @@
 import Joi from 'joi';
 
-export const create = {
+import { JoiValidation } from '../types';
+
+export const create: JoiValidation = {
     body: Joi.object({
         name: Joi.string().required(),
         userName: Joi.string().required()

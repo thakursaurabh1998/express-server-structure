@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import * as http from 'http';
 
 import config from './config';
 import * as routes from './routes';
@@ -23,7 +24,8 @@ app.use((_req, res) => {
     res.status(404).json(createResponse(false, ['Not Found']));
 });
 
-app.use((err, _req, res, _next) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     const { statusCode, response } = errorResponse(err);
     if (statusCode >= 500) {
         logger.error(err);
@@ -33,19 +35,21 @@ app.use((err, _req, res, _next) => {
     res.status(statusCode).json(response);
 });
 
-let server = null;
+export let httpServer: http.Server;
 
 export async function start() {
     await sequelize.sync({ alter: true });
     await fillData();
-    server = app.listen(config.server.port);
+    httpServer = app.listen(config.server.port);
     logger.info(`API running on port - ${config.server.port}`);
 }
 
 // manage graceful shutdown with this function
 export async function stop() {
-    if (!server) {
+    if (!httpServer) {
         throw new Error('Server not started yet');
     }
-    server.close();
+    // await sequelize.query('DROP TABLE Users_backup');
+    // await sequelize.query('DROP TABLE Comments_backup');
+    httpServer.close();
 }

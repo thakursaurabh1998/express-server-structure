@@ -1,9 +1,13 @@
 import * as server from './app/server';
+import * as socketServer from './socket/server';
 import { logger } from './utils/logger';
 
-server.start();
+(async function () {
+    await server.start();
+    socketServer.start(server.httpServer);
+})();
 
-function handleKillSignals(signal) {
+function handleKillSignals(signal: NodeJS.Signals) {
     logger.info(`${signal} SIGNAL RECEIVED`);
     server.stop();
     logger.info('HTTP Server closed');

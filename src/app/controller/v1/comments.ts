@@ -18,7 +18,7 @@ export const fetchAllComments = verifyRequestSchema(async (req, res, next) => {
     const { postId } = req.query;
 
     try {
-        const comments = await commentsService.fetchAllComments(postId);
+        const comments = await commentsService.fetchAllComments(parseInt(postId as string));
         res.status(200).json(createResponse(true, null, { comments }));
     } catch (error) {
         next(error);

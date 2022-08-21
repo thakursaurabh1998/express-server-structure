@@ -1,7 +1,7 @@
-import Comment from '../models/Comment';
+import Comment from '../models/comment';
 import User from '../models/user';
 
-export async function addComment(userId, postId, content) {
+export async function addComment(userId: string, postId: number, content: string) {
     const comment = Comment.build({
         userId,
         content,
@@ -12,7 +12,7 @@ export async function addComment(userId, postId, content) {
 }
 
 // paginate this
-export async function fetchAllComments(postId) {
+export async function fetchAllComments(postId: number) {
     return Comment.findAll({
         where: { postId },
         include: { model: User, attributes: ['name', 'displayPicture'] }
