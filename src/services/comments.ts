@@ -1,5 +1,5 @@
-import Comment from '../models/comment';
-import User from '../models/user';
+import Comment from '../models/comment.model';
+import User from '../models/user.model';
 
 export async function addComment(userId: string, postId: number, content: string) {
     const comment = Comment.build({

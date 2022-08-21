@@ -1,8 +1,10 @@
 import * as server from './app/server';
 import * as socketServer from './socket/server';
+import * as connections from './utils/connections';
 import { logger } from './utils/logger';
 
 (async function () {
+    await connections.init();
     await server.start();
     socketServer.start(server.httpServer);
 })();

@@ -1,4 +1,5 @@
-import { sequelize } from '../utils/connections';
+import Comment from '../models/comment.model';
+import User from '../models/user.model';
 import { logger } from '../utils/logger';
 
 const Users = [
@@ -22,14 +23,14 @@ const Comments = [
 export async function fillData() {
     await Promise.all(
         Users.map((user) =>
-            sequelize.models.User.build(user)
+            User.build(user)
                 .save()
                 .catch((err) => logger.warn(err.message))
         )
     );
     await Promise.all(
         Comments.map((comment) =>
-            sequelize.models.Comment.build(comment)
+            Comment.build(comment)
                 .save()
                 .catch((err) => logger.warn(err.message))
         )
